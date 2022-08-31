@@ -55,5 +55,6 @@
     "@types/webpack-env": "^1.16.2",
     "single-spa-layout": "^1.6.0"
   },
-  "types": "dist/my-app-root-config.d.ts"
+  "types": "dist/my-app-root-config.d.ts",
+  "version": "1.0.0"
 }
