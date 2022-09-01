@@ -17,7 +17,7 @@ sed -i "s/my-app/$project/g" package.json
 sed -i "s/my-app/$project/g" tsconfig.json
 sed -i "s/'my-app'/'$project'/g" webpack.config.js
 sed -i "s/my-app/$project/g" src/index.ejs
-mv src/my-app-root-config.ts "src/$project-root-config.tsx"
+mv src/my-app-root-config.ts "src/$project-root-config.ts"
 
 
 echo "🔥🔨 Installing dependencies"
