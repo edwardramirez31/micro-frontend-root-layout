@@ -81,6 +81,7 @@
       - Create a distribution and add `index.html` as the default root object
       - Setup and origin access control like [here](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html)
       - Create a distribution invalidation that points to the object path `/*` so that CloudFront removes the previous file from cache before it expires. This way, users will get the latest app version when CI/CD process finishes
+      - Use your CloudFront distribution to get the micro frontends JS code, favicon and other files needed, instead of using the default URL provided by S3.
       - Change your bucket policy to make sure users can access the content in the bucket only through the specified CloudFront distribution
     ```
     {
