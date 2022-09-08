@@ -57,13 +57,16 @@
 - Build the project with `yarn build` and deploy the files to a CDN or host to serve those static files.
 
 - This project uses AWS S3 to host the build files and the root HTML. In order to use this feature properly:
+
   - Create an IAM user with S3 permissions and setup `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` at repository secrets
   - Type your bucket name when executing `setup.sh`
   - Create an S3 bucket at AWS and change bucket settings according to your needs
+
     - Enable S3 Static Website Hosting at the bottom of the Properties tab in the AWS Management Console
       - Set the index document as `index.html`
     - Uncheck all options at bucket settings or just whatever is necessary
     - Change bucket policy allowing externals to get your objects if you want to serve content directly from the bucket
+
     ```
     {
       "Version": "2012-10-17",
@@ -77,12 +80,24 @@
       ]
     }
     ```
+
     - Otherwise, if you want to serve your content through CloudFront:
+
       - Create a distribution and add `index.html` as the default root object
       - Setup and origin access control like [here](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html)
       - Create a distribution invalidation that points to the object path `/*` so that CloudFront removes the previous file from cache before it expires. This way, users will get the latest app version when CI/CD process finishes
       - Use your CloudFront distribution to get the micro frontends JS code, favicon and other files needed, instead of using the default URL provided by S3.
+      - Add new step at `.github/workflows/main.yml` in order to invalidate cache from CloudFront build files. Setup DISTRIBUTION_ID at repository secrets
+
+      ```yml
+        - name: Invalidate cache in CloudFront
+        run: aws cloudfront create-invalidation --distribution-id "${DISTRIBUTION_ID}" --paths "/path1" "/example-path-2*" --no-cli-pager
+        env:
+          DISTRIBUTION_ID: ${{ secrets.DISTRIBUTION_ID }}
+      ```
+
       - Change your bucket policy to make sure users can access the content in the bucket only through the specified CloudFront distribution
+
     ```
     {
       "Version": "2012-10-17",
@@ -104,7 +119,9 @@
       ]
     }
     ```
+
     - Add CORS setting so that the root module can fetch your bucket files from local dev machine or production and dev servers
+
     ```
     [
       {
@@ -126,7 +143,9 @@
       }
     ]
     ```
+
     - Finally, add your compiled root code at the import maps and the micro frontends JS code, according to the environment
+
     ```html
     <% if (isLocal) { %>
     <script type="systemjs-importmap">
