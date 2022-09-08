@@ -63,7 +63,7 @@
     - Enable S3 Static Website Hosting at the bottom of the Properties tab in the AWS Management Console
       - Set the index document as `index.html`
     - Uncheck all options at bucket settings or just whatever is necessary
-    - Change bucket policy allowing externals to get your objects
+    - Change bucket policy allowing externals to get your objects if you want to serve content directly from the bucket
     ```
     {
       "Version": "2012-10-17",
@@ -73,6 +73,32 @@
           "Principal": "*",
           "Action": "s3:GetObject",
           "Resource": "arn:aws:s3:::YOUR-BUCKET-NAME/*"
+        }
+      ]
+    }
+    ```
+    - Otherwise, if you want to serve your content through CloudFront:
+      - Create a distribution and add `index.html` as the default root object
+      - Setup and origin access control like [here](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html)
+      - Create a distribution invalidation that points to the object path `/*` so that CloudFront removes the previous file from cache before it expires. This way, users will get the latest app version when CI/CD process finishes
+      - Change your bucket policy to make sure users can access the content in the bucket only through the specified CloudFront distribution
+    ```
+    {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Sid": "AllowCloudFrontServicePrincipalReadOnly",
+          "Effect": "Allow",
+          "Principal": {
+            "Service": "cloudfront.amazonaws.com"
+          },
+          "Action": "s3:GetObject",
+          "Resource": "arn:aws:s3:::${YOUR_BUCKET_NAME}/*",
+          "Condition": {
+            "StringEquals": {
+              "AWS:SourceArn": "arn:aws:cloudfront::${AWS_ACCOUNT_ID}:distribution/${CLOUDFRONT_DISTRIBUTION_ID}"
+            }
+          }
         }
       ]
     }
