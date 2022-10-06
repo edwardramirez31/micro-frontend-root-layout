@@ -167,3 +167,25 @@
     </script>
     <% } %>
     ```
+
+- You can use the CloudFormation template at `serverless.yml` in order to deploy the whole frontend infrastructure to AWS with the command:
+
+```
+serverless deploy --stage ${YOUR_ENVIRONMENT} --verbose
+```
+
+- This will setup:
+
+  - Bucket to store each micro frontend code
+    - This will handle CORS from your localhost and the cloudfront distribution URL
+  - CloudFront distribution that points to S3 bucket
+    - It uses `index.html` as default object
+    - Setup custom error pages to avoid error when user goes to a specific route at the app
+    - Use custom cache policy that handle CORS headers for local and prod environments
+  - Bucket Policy that allows CloudFront to get resources through OAC (Origin Access Control)
+
+- Don't forget to change the Bucket CORS whitelist with the CloudFront domain result or your Route 53 domain
+
+- Also change service name at `serverless.yml according to your needs`
+
+- Finally, setup secrets for S3 bucket names and roles to deploy to AWS at GitHub actions files
