@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/edwardramirez31/micro-frontend-root-layout/compare/v1.2.0...v1.2.1) (2022-10-07)
+
+
+### Bug Fixes
+
+* solve html syntax error ([887314f](https://github.com/edwardramirez31/micro-frontend-root-layout/commit/887314fd5f86f8449323058567d3a0be7d98e138))
+
 # [1.2.0](https://github.com/edwardramirez31/micro-frontend-root-layout/compare/v1.1.0...v1.2.0) (2022-10-07)
 
 

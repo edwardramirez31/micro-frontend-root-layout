@@ -56,5 +56,5 @@
     "single-spa-layout": "^1.6.0"
   },
   "types": "dist/my-app-root-config.d.ts",
-  "version": "1.2.0"
+  "version": "1.2.1"
 }
