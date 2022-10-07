@@ -54,7 +54,19 @@
   - Remove `.releaserc` file
   - Remove `@semantic-release/changelog`, `@semantic-release/git`, `semantic-release` from `package.json`
 
+## Local Development
+
+- Set `devtools` local storage key at browser console in order to take a look at [import-map-overrides](https://github.com/single-spa/import-map-overrides/blob/main/docs/ui.md) extension. This way, you can point the import map to your micro frontend that is running locally. Extension docs here [here](https://github.com/single-spa/import-map-overrides)
+
+```js
+localStorage.setItem('devtools', true);
+```
+
+## Deployment in AWS
+
 - Build the project with `yarn build` and deploy the files to a CDN or host to serve those static files.
+
+### Use CloudFormation
 
 - You can use the CloudFormation template at `serverless.yml` in order to deploy the whole frontend infrastructure to AWS with the command:
 
@@ -87,13 +99,15 @@ serverless deploy --stage ${ENVIRONMENT} \
 
 - Don't forget to change the Bucket CORS whitelist with the CloudFront domain result or your Route 53 domain
 
-- Also change service name at `serverless.yml according to your needs`
+- Also change service name at `serverless.yml` according to your needs
+
+## Import Map Deployer
 
 - It's highly recommended to use [Import Map Deployer](https://github.com/Insta-Graph/import-map-deployer) so that this root repo will get the micro frontend imports from a dynamic import map JSON file. If you don't want to use it, remove the following lines at
 
 ```yml
 - name: Update import map
-  run: curl -u ${USERNAME}:${PASSWORD} -d '{ "service":"@snapify/'"${MICRO_FRONTEND_NAME}"'","url":"https://'"${CLOUDFRONT_HOST}"'/'"${MICRO_FRONTEND_NAME}"'/'"${IDENTIFIER}"'/'snapify-"${MICRO_FRONTEND_NAME}"'.js" }' -X PATCH https://${IMD_HOST}/services/\?env=prod -H "Accept:application/json" -H "Content-Type:application/json"
+  run: curl -u ${USERNAME}:${PASSWORD} -d '{ "service":"@{YOUR_ORGANZATION_NAME}/'"${MICRO_FRONTEND_NAME}"'","url":"https://'"${CLOUDFRONT_HOST}"'/'"${MICRO_FRONTEND_NAME}"'/'"${IDENTIFIER}"'/'{YOUR_ORGANZATION_NAME}-"${MICRO_FRONTEND_NAME}"'.js" }' -X PATCH https://${IMD_HOST}/services/\?env=prod -H "Accept:application/json" -H "Content-Type:application/json"
   env:
     USERNAME: ${{ secrets.IMD_USERNAME }}
     PASSWORD: ${{ secrets.IMD_PASSWORD }}
@@ -127,18 +141,24 @@ serverless deploy --stage ${ENVIRONMENT} \
 }
 ```
 
-- Finally, setup secrets for S3 bucket names and roles to deploy to AWS at GitHub actions files. Secrets needed are:
+### Repository Secrets
 
-  - `ACTIONS_DEPLOY_ACCESS_TOKEN`: GitHub token used by Semantic Release
-  - `ROLE_TO_ASSUME_ARN`: IAM Role ARN
-  - `BUCKET_NAME`: S3 Bucket name
-  - `MICRO_FRONTEND_NAME`: Micro frontend name. This will be used to create a folder where you will have your micro frontend deployed JS files
-  - `IMD_USERNAME`: Username to authenticate in case you are using import map deployer
-  - `IMD_PASSWORD`: Password to authenticate in case you are using import map deployer
-  - `IMD_HOST`: Import map deployer domain name (without https)
-  - `CLOUDFRONT_HOST`: Cloud front domain name (without https). This can also be Route 53, or S3 bucket domain in case you are not using CloudFront to host your import map JSON file.
+Setup secrets for S3 bucket names and roles to deploy to AWS at GitHub actions files. Secrets needed are:
 
-- Otherwise, you can set up each CloudFormation resource manually. This project uses AWS S3 to host the build files and the root HTML. In order to use this feature properly:
+- `ACTIONS_DEPLOY_ACCESS_TOKEN`: GitHub token used by Semantic Release
+- `FRONTEND_DEPLOYMENT_ROLE`: IAM Role ARN
+- `BUCKET_NAME`: S3 Bucket name
+- `MICRO_FRONTEND_NAME`: Micro frontend name. This will be used to create a folder where you will have your micro frontend deployed JS files
+- `IMD_USERNAME`: Username to authenticate in case you are using import map deployer
+- `IMD_PASSWORD`: Password to authenticate in case you are using import map deployer
+- `IMD_HOST`: Import map deployer domain name (without https)
+- `CLOUDFRONT_HOST`: Cloud front domain name (without https). This can also be Route 53, or S3 bucket domain in case you are not using CloudFront to host your import map JSON file.
+
+### Manual Deployment in AWS
+
+> It is highly recommended to use the CloudFormation template given that following all these manual steps could end up making errors or with missing steps
+
+- You can set up each CloudFormation resource manually. This project uses AWS S3 to host the build files and the root HTML. In order to use this feature properly:
 
   - Create an IAM role with S3 permissions (get, put S3 object and list bucket) that will be assumed by GitHub on deployment stage. The resulting role custom attached policy
 

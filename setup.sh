@@ -19,6 +19,7 @@ sed -i "s/d1ecqcwx7brud6.cloudfront.net/$domain/g" src/index.ejs
 
 
 sed -i "s/my-app/$project/g" package.json
+sed -i "s/my-app/$project/g" .github/workflows/main.yml
 sed -i "s/my-app/$project/g" tsconfig.json
 sed -i "s/'my-app'/'$project'/g" webpack.config.js
 sed -i "s/my-app/$project/g" src/index.ejs

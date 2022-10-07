@@ -66,7 +66,7 @@ jobs:
           BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
       # !UNCOMMENT if you are using import map deployer
       # - name: Update import map
-      #   run: curl -u ${USERNAME}:${PASSWORD} -d '{ "service":"@snapify/'"${MICRO_FRONTEND_NAME}"'","url":"https://'"${CLOUDFRONT_HOST}"'/'"${MICRO_FRONTEND_NAME}"'/'"${IDENTIFIER}"'/'snapify-"${MICRO_FRONTEND_NAME}"'.js" }' -X PATCH https://${IMD_HOST}/services/\?env=prod -H "Accept:application/json" -H "Content-Type:application/json"
+      #   run: curl -u ${USERNAME}:${PASSWORD} -d '{ "service":"@my-app/'"${MICRO_FRONTEND_NAME}"'","url":"https://'"${CLOUDFRONT_HOST}"'/'"${MICRO_FRONTEND_NAME}"'/'"${IDENTIFIER}"'/'my-app-"${MICRO_FRONTEND_NAME}"'.js" }' -X PATCH https://${IMD_HOST}/services/\?env=prod -H "Accept:application/json" -H "Content-Type:application/json"
       #   env:
       #     USERNAME: ${{ secrets.IMD_USERNAME }}
       #     PASSWORD: ${{ secrets.IMD_PASSWORD }}
