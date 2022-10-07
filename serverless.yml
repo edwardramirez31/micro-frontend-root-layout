@@ -5,7 +5,17 @@ provider:
   stage: ${opt:stage, "dev"}
   name: aws
 
+custom:
+  OIDCProviderArn: ${opt:oidc, ""}
+  GitHubOrg: ${opt:org, ""}
+  RepositoryNamePrefix: ${opt:repo, ""}
+
 resources:
+  Conditions:
+    CreateOIDCProvider: !Equals
+      - ${self:custom.OIDCProviderArn}
+      - ''
+
   Resources:
     OriginAccessControl:
       Type: AWS::CloudFront::OriginAccessControl
@@ -133,3 +143,56 @@ resources:
             Value: ${self:service}
           - Key: environment
             Value: ${opt:stage, self:provider.stage, "dev"}
+
+    Role:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: ${self:service}-${opt:stage, self:provider.stage, "dev"}-ci
+        Description: Role that allows GitHub to assume roles and deploy new code to AWS Lambda for ${self:service}-${opt:stage, self:provider.stage, "dev"}-ci
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action: sts:AssumeRoleWithWebIdentity
+              Principal:
+                Federated: !If
+                  - CreateOIDCProvider
+                  - !Ref GithubOidc
+                  - ${self:custom.OIDCProviderArn}
+              Condition:
+                StringLike:
+                  token.actions.githubusercontent.com:sub: repo:${self:custom.GitHubOrg}/${self:custom.RepositoryNamePrefix}*:*
+                ForAllValues:StringEquals:
+                  token.actions.githubusercontent.com:iss: 'https://token.actions.githubusercontent.com'
+                  token.actions.githubusercontent.com:aud: 'sts.amazonaws.com'
+        Tags:
+          - Key: project
+            Value: ${self:service}
+          - Key: environment
+            Value: ${opt:stage, self:provider.stage, "dev"}
+
+    StaticResourcesBucketDeployPolicy:
+      Type: AWS::IAM::Policy
+      Properties:
+        Roles:
+          - !Ref Role
+        PolicyName: ${self:service}-${opt:stage, self:provider.stage, "dev"}-bucket-access
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - s3:GetObject
+                - s3:ListBucket
+                - s3:PutObject
+              Resource: !Sub ${StaticResourcesBucket.Arn}/*
+
+    GithubOidc:
+      Type: AWS::IAM::OIDCProvider
+      Condition: CreateOIDCProvider
+      Properties:
+        Url: https://token.actions.githubusercontent.com
+        ClientIdList:
+          - sts.amazonaws.com
+        ThumbprintList:
+          - 6938fd4d98bab03faadb97b34396831e3780aea1
