@@ -49,11 +49,6 @@ resources:
                 - HEAD
               AllowedOrigins:
                 - 'http://localhost:9000'
-                - 'https://xxxxxxx.cloudfront.net/'
-                # - !Join
-                #   - ''
-                #   - - 'https://'
-                #     - !GetAtt Distribution.DomainName
               ExposedHeaders:
                 - 'Access-Control-Allow-Origin'
               Id: ${self:service}-${opt:stage, self:provider.stage, "dev"}-CORSRule
