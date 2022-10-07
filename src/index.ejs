@@ -48,7 +48,14 @@
 
   <!-- Add your organization's prod import map URL to this script's src  -->
   <!-- <script type="systemjs-importmap" src="/importmap.json"></script> -->
-
+  <!-- !UNCOMMENT this import map script in case you won't get the app import map JSON file from S3 -->
+  <!-- <script type="systemjs-importmap">
+    {
+      "imports": {
+        "@my-app/root-config": "https://d1ecqcwx7brud6.cloudfront.net/root-config/my-app-root-config.js"
+      }
+    }
+  </script> -->
   <% if (isLocal) { %>
   <script type="systemjs-importmap">
     {
@@ -58,17 +65,7 @@
       }
     }
   </script>
-  <!-- !UNCOMMENT this import map script in case you won't get the app import map JSON file from S3 -->
-  <!-- <% } else { %>
-  <script type="systemjs-importmap">
-    {
-      "imports": {
-        "@my-app/root-config": "https://d1ecqcwx7brud6.cloudfront.net/root-config/my-app-root-config.js"
-      }
-    }
-  </script> -->
   <% } %>
-
   <!--
     If you need to support Angular applications, uncomment the script tag below to ensure only one instance of ZoneJS is loaded
     Learn more about why at https://single-spa.js.org/docs/ecosystem-angular/#zonejs

@@ -185,7 +185,9 @@ resources:
                 - s3:GetObject
                 - s3:ListBucket
                 - s3:PutObject
-              Resource: !Sub ${StaticResourcesBucket.Arn}/*
+              Resource:
+                - !Sub ${StaticResourcesBucket.Arn}
+                - !Sub ${StaticResourcesBucket.Arn}/*
 
     GithubOidc:
       Type: AWS::IAM::OIDCProvider
