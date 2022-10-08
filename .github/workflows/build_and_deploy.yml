@@ -28,7 +28,7 @@ on:
         description: 'Boolean used to update import map if it is wanted'
         required: true
     secrets:
-      FRONTEND_DEPLOYMENT_ROLE:
+      ROLE_TO_ASSUME_ARN:
         required: true
       BUCKET_NAME:
         required: true
@@ -61,12 +61,16 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: ${{ secrets.FRONTEND_DEPLOYMENT_ROLE }}
+          role-to-assume: ${{ secrets.ROLE_TO_ASSUME_ARN }}
           role-session-name: ${{ inputs.role-session-name }}
           role-duration-seconds: 900
           aws-region: ${{ inputs.aws-region }}
-      - name: Build
-        run: yarn build
+      - name: Build development bundle
+        if: ${{ inputs.environment-name == 'Development' }}
+        run: yarn build:dev
+      - name: Build production bundle
+        if: ${{ inputs.environment-name == 'Production' }}
+        run: yarn build:prod
       - name: Deploy to S3
         run: aws s3 sync dist/ s3://${BUCKET_NAME}/${MICRO_FRONTEND_NAME}/${IDENTIFIER}
         env:
