@@ -103,7 +103,7 @@ serverless deploy --stage ${ENVIRONMENT} \
 
 ## Import Map Deployer
 
-- It's highly recommended to use [Import Map Deployer](https://github.com/Insta-Graph/import-map-deployer) so that this root repo will get the micro frontend imports from a dynamic import map JSON file. If you don't want to use it, remove the following lines at
+- It's highly recommended to use [Import Map Deployer](https://github.com/edwardramirez31/import-map-deployer) so that this root repo will get the micro frontend imports from a dynamic import map JSON file. If you don't want to use it, remove the following lines at
 
 ```yml
 - name: Update import map
@@ -152,7 +152,10 @@ Setup secrets for S3 bucket names and roles to deploy to AWS at GitHub actions f
 - `IMD_USERNAME`: Username to authenticate in case you are using import map deployer
 - `IMD_PASSWORD`: Password to authenticate in case you are using import map deployer
 - `IMD_HOST`: Import map deployer domain name (without https)
+- `IMD_ENVIRONMENT`: Import map deployer environment that you want to update (prod, dev, staging)
 - `CLOUDFRONT_HOST`: Cloud front domain name (without https). This can also be Route 53, or S3 bucket domain in case you are not using CloudFront to host your import map JSON file.
+
+> This secrets should contain production values. Then, you can override secrets using Environment Secrets
 
 ## Environments
 
@@ -162,7 +165,11 @@ Setup secrets for S3 bucket names and roles to deploy to AWS at GitHub actions f
 
 - Setup environment secrets at `Development` so that the development `ROLE_TO_ASSUME_ARN` points to a role that will interact with the development S3 `BUCKET_NAME`
 
+- Override `IMD_ENVIRONMENT` at Development Env Secret so that it points to dev, test or whatever name you gave to this env in your import map deployer server
+
 - Change `environment-url` input passed down to deployment workflow so that each env will point to the corresponding CloudFront or Route 53 url
+
+- Set `run-import-map-deployer` to true if you already stored the required import map secrets
 
 ### Manual Deployment in AWS
 
