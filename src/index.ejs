@@ -32,7 +32,7 @@
     More information about shared dependencies can be found at https://single-spa.js.org/docs/recommended-setup#sharing-with-import-maps.
   -->
   <!-- !REMOVE this import map script in case you won't get the app import map JSON file from S3 -->
-  <% if (isLocal) { %>
+  <% if (isLocal || isDev) { %>
   <script type="systemjs-importmap" src="https://d2zylh2dyni892.cloudfront.net/import-map.json"></script>
   <% } else { %>
   <script type="systemjs-importmap" src="https://d1ecqcwx7brud6.cloudfront.net/import-map.json"></script>
