@@ -64,7 +64,7 @@ localStorage.setItem('devtools', true);
 
 ## Deployment in AWS
 
-- Build the project with `yarn build` and deploy the files to a CDN or host to serve those static files.
+- Build the project with `yarn build:${ENVIRONMENT}` and deploy the files to a CDN or host to serve those static files.
 
 ### Use CloudFormation
 
@@ -146,7 +146,7 @@ serverless deploy --stage ${ENVIRONMENT} \
 Setup secrets for S3 bucket names and roles to deploy to AWS at GitHub actions files. Secrets needed are:
 
 - `ACTIONS_DEPLOY_ACCESS_TOKEN`: GitHub token used by Semantic Release
-- `FRONTEND_DEPLOYMENT_ROLE`: IAM Role ARN
+- `ROLE_TO_ASSUME_ARN`: IAM Role ARN
 - `BUCKET_NAME`: S3 Bucket name
 - `MICRO_FRONTEND_NAME`: Micro frontend name. This will be used to create a folder where you will have your micro frontend deployed JS files
 - `IMD_USERNAME`: Username to authenticate in case you are using import map deployer
@@ -160,7 +160,7 @@ Setup secrets for S3 bucket names and roles to deploy to AWS at GitHub actions f
 
 - Each environment should have its own S3 Bucket, IAM Role for deployment and CloudFront distribution
 
-- Setup environment secrets at `Development` so that the development `FRONTEND_DEPLOYMENT_ROLE` points to a role that will interact with the development S3 `BUCKET_NAME`
+- Setup environment secrets at `Development` so that the development `ROLE_TO_ASSUME_ARN` points to a role that will interact with the development S3 `BUCKET_NAME`
 
 - Change `environment-url` input passed down to deployment workflow so that each env will point to the corresponding CloudFront or Route 53 url
 
