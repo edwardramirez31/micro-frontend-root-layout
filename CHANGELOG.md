@@ -1,3 +1,11 @@
+## [1.2.2](https://github.com/edwardramirez31/micro-frontend-root-layout/compare/v1.2.1...v1.2.2) (2022-10-08)
+
+
+### Bug Fixes
+
+* setup isLocal flag to use the right import map at index.html ([82a7a5c](https://github.com/edwardramirez31/micro-frontend-root-layout/commit/82a7a5c01e6329838d34727f180e905be5a6f2bf))
+* use isDev flag instead of local to avoid getting localhost root ([0cacb2c](https://github.com/edwardramirez31/micro-frontend-root-layout/commit/0cacb2cc03bf7509605a0a5586c9016ef9548821))
+
 ## [1.2.1](https://github.com/edwardramirez31/micro-frontend-root-layout/compare/v1.2.0...v1.2.1) (2022-10-07)
 
 
